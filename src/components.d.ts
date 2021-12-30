@@ -15,6 +15,11 @@ export namespace Components {
     interface AppRoot {
     }
     interface DemoComponent {
+        "defaultValue": number;
+        "inputType": string;
+        "max": number;
+        "min": number;
+        "placeholderValue": string;
     }
 }
 declare global {
@@ -58,6 +63,11 @@ declare namespace LocalJSX {
     interface AppRoot {
     }
     interface DemoComponent {
+        "defaultValue"?: number;
+        "inputType"?: string;
+        "max"?: number;
+        "min"?: number;
+        "placeholderValue"?: string;
     }
     interface IntrinsicElements {
         "app-home": AppHome;

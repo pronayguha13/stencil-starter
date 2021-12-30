@@ -21,7 +21,8 @@ export class AppProfile {
       return (
         <div class="app-profile">
           <p>Hello! My name is {this.normalize(this.match.params.name)}. My name was passed in through a route param!</p>
-          <demo-component></demo-component>
+          <demo-component inputType='text' min={0} max={99}/>
+          <demo-component inputType='number' min={0} max={100} defaultValue={45}/>
         </div>
       );
     }
