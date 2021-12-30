@@ -1,4 +1,4 @@
-import { Component, h, Prop, State, Watch } from '@stencil/core';
+import { Component, h, Listen, Prop, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'demo-component',
@@ -18,6 +18,23 @@ export class DemoComponent {
     if (!newValue || typeof newValue === 'undefined' || !newValue.length) this.placeholderValue = 'Hello';
   }
 
+  @Listen('change', { capture: true })
+  onChangeHandler(e: object) {
+    console.log('🚀 ~ file: demo-component.tsx ~ line 23 ~ DemoComponent ~ onChangeHandler ~ e', e);
+    let newValue = e?.['path']?.[0]?.['value'];
+    if (this.inputType.match('text')) {
+      if (newValue?.['length'] >= this.min && newValue?.['length'] <= this.max) {
+        this.inputValue = newValue;
+      }
+    } else {
+      newValue = parseInt(newValue);
+      if (newValue >= this.min && newValue <= this.max) {
+        this.inputValue = newValue;
+      }
+    }
+    console.log(newValue, typeof newValue);
+  }
+
   @Watch('inputType')
   resetInputValue(newValue: string) {
     if (newValue.match('text')) {
@@ -29,49 +46,22 @@ export class DemoComponent {
     }
   }
 
-  @Watch('inputValue')
-  validateInput(newValue: string | number, oldValue: string | number) {
-    console.log('validating input ....');
-    if (this.inputType.match('text')) {
-      if (newValue?.['length'] < this.min || newValue?.['length'] > this.max) {
-        this.inputValue = oldValue;
-      }
-    } else {
-      if (newValue < this.min || newValue > this.max) {
-        this.inputValue = oldValue;
-      }
-    }
-    console.log(newValue, typeof newValue);
-  }
-
   connectedCallback() {
     if (this.inputType.match('number')) {
-      console.log('setting inputValue from defaultValue...');
+      console.log('from number type setting inputValue from defaultValue...');
       this.inputValue = this.defaultValue;
     }
   }
 
-  onChangeHandler = (e: object) => {
-    console.log('from onChangeHandler...');
-    let inputValue = e?.['path'][0]['value'];
-    if (this.inputType.match('number')) {
-      inputValue = parseInt(inputValue);
-    }
+  // onChangeHandler = (e: object) => {
+  //   console.log('from onChangeHandler...');
+  //   let inputValue = e?.['path'][0]['value'];
+  //   if (this.inputType.match('number')) {
+  //     inputValue = parseInt(inputValue);
+  //   }
 
-    this.inputValue = inputValue;
-  };
-
-  onKeyDownHandler = (e: object) => {
-    console.log('🚀 ~ file: demo-component.tsx ~ line 56 ~ DemoComponent ~ e', e);
-    if (this.inputType.match('number')) {
-      if ((e?.['keyCode'] >= 48 && e?.['keyCode'] <= 57) || (e?.['keyCode'] >= 96 && e?.['keyCode'] <= 105)) {
-        let inputValue = e?.['path'][0]['value'];
-        console.log('🚀 ~ file: demo-component.tsx ~ line 61 ~ DemoComponent ~ inputValue', inputValue);
-        inputValue = parseInt(inputValue);
-        this.inputValue = inputValue;
-      }
-    }
-  };
+  //   this.inputValue = inputValue;
+  // };
 
   getInputField = () => {
     let inputField = null;
@@ -87,7 +77,6 @@ export class DemoComponent {
           min={this.min}
           value={this.inputValue ? this.inputValue : this.defaultValue}
           onChange={e => this.onChangeHandler(e)}
-          onKeyPress={e => this.onKeyDownHandler(e)}
         />
       );
     }
