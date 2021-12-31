@@ -22,6 +22,8 @@ export class DemoComponent {
   onChangeHandler(e: object) {
     console.log('🚀 ~ file: demo-component.tsx ~ line 23 ~ DemoComponent ~ onChangeHandler ~ e', e);
     let newValue = e?.['path']?.[0]?.['value'];
+    console.log('🚀 ~ file: demo-component.tsx ~ line 25 ~ DemoComponent ~ onChangeHandler ~ newValue', newValue);
+
     if (this.inputType.match('text')) {
       if (newValue?.['length'] >= this.min && newValue?.['length'] <= this.max) {
         this.inputValue = newValue;
@@ -31,6 +33,22 @@ export class DemoComponent {
       if (newValue >= this.min && newValue <= this.max) {
         this.inputValue = newValue;
       }
+    }
+    console.log(newValue, typeof newValue);
+  }
+  @Listen('keyup', { capture: true })
+  onKeyupHandler(e: object) {
+    console.log('🚀 ~ file: demo-component.tsx ~ line 23 ~ DemoComponent ~ onChangeHandler ~ e', e);
+    let newValue = e?.['path']?.[0]?.['value'];
+    if (this.inputType.match('text')) {
+      if (newValue?.['length'] >= this.min && newValue?.['length'] <= this.max) {
+        this.inputValue = newValue;
+      } else return;
+    } else {
+      newValue = parseInt(newValue);
+      if (newValue >= this.min && newValue <= this.max) {
+        this.inputValue = newValue;
+      } else return;
     }
     console.log(newValue, typeof newValue);
   }
@@ -67,7 +85,9 @@ export class DemoComponent {
     let inputField = null;
 
     if (this.inputType.match('text')) {
-      inputField = <input type="text" placeholder={this.placeholderValue} maxLength={this.max} minLength={this.min} value={this.inputValue} />;
+      inputField = (
+        <input type="text" placeholder={this.placeholderValue} maxLength={this.max} minLength={this.min} value={this.inputValue} onChange={e => this.onChangeHandler(e)} />
+      );
     } else if (this.inputType.match('number')) {
       inputField = (
         <input
